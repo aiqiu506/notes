@@ -69,3 +69,34 @@ Headers：对应的就是工作模式中的 headers
 
 > Channel.close()  道通关闭。一定要先进行 channel 关闭，再进行 connnetion 的关闭。而消费者一般不手动执行关闭，因为要持续监听消息的到来。
 
+#### 五、延时队列
+
+延时队列指的是，消息不会马上被消费，而是到指定时间被消费。
+
+在这之前，先了解一个概念 `死信`。死信交换机。
+
+死信指的是，没能正常被消费的消息（拒收，requeue是false，ttl 时间到了的消息，队列中消息达到最大长度）。最后的走向。通常如果没有为队列配置消息进入死信交换机的参数，消息会被丢弃。
+
+而如果为队列设置了	`x-dead-letter-exchange`和` x-dead-letter-routing-key`，那么最后消息会被转发到死信交换机。
+
+当然，死信交换机，本质上是一个普通的交换机。只是被用于接收死信的消息，而被称为死信交换机。
+
+##### TTL
+
+消息的TTL就是消息的存活时间。RabbitMQ可以对队列和消息分别设置TTL.
+
+消息设置 ttl，即在 pushlish 之前，设置`x-message-ttl`参数。
+
+消息设置了ttl或设置了 ttl 的队列中的消息  时间到了时，将进入死信交换机。
+
+既然有了死信和 ttl 的概念，那么打造一个延时队列就变得简单了。
+
+第一步。设置一个死信交换机（也就是 ExchangeDelcare,type 采用 direct）deadExchange
+
+第二步。设置一个队列，bussiness 并为其设置`x-dead-letter-exchange`=deadExchange和` x-dead-letter-routing-key`=deadQueue
+
+第三步。设置一个死信交换机的消费队列，deadQueue, 设置 routingKey='deadQueue'
+
+
+
+至此，向 bussiness队列 发送消息，并设置消息的`expiration`=3000（毫秒）。在3秒后，消息从将 bussiness 队列转到 deadQueue 队列。
