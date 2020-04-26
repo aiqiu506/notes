@@ -85,9 +85,9 @@ Headers：对应的就是工作模式中的 headers
 
 消息的TTL就是消息的存活时间。RabbitMQ可以对队列和消息分别设置TTL.
 
-消息设置 ttl，即在 pushlish 之前，设置`x-message-ttl`参数。
+队列设置 ttl，即在消息 pushlish 之前，设置`x-message-ttl`参数。
 
-消息设置了ttl或设置了 ttl 的队列中的消息  时间到了时，将进入死信交换机。
+消息设置了ttl（expiration）或设置了 ttl 的队列中的消息  时间到了时，将进入死信交换机。
 
 既然有了死信和 ttl 的概念，那么打造一个延时队列就变得简单了。
 

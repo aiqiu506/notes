@@ -26,7 +26,7 @@ php-fpm是一个fastcgi管理程序。。fastcgi又是什么？
 
 先讲讲什么是cgi，cgi是一种协议，指的是web服务与其它进程之间通信的协议。
 
-真初web服务器与php的通信是，一个请求fork一个cgi进程去执行。。这样会导致频繁地创建线程。fastcgi的出现，使得一个cgi进程可以为多个请求服务。php-fpm是fastcgi的一种。它提供php-cgi的管理。通常有一个master进程多个worker进程组成。
+最初web服务器与php的通信是，一个请求fork一个cgi进程去执行。。这样会导致频繁地创建线程。fastcgi的出现，使得一个cgi进程可以为多个请求服务。php-fpm是fastcgi的一种。它提供php-cgi的管理。通常有一个master进程多个worker进程组成。
 
 一个请求通过nginx的worker进程，根据匹配规则对应到所在的server块，发现里面是与一个socket的9000端口的php-fpm的cgi进程通信。于是将请求交给php-fpm处理。php-fpm拿到请求后，会分配到空闲的php-fpm的worker进程。php-fpm的worker进程内嵌一个php解析器。接下来，就是php的执行过程了。
 
